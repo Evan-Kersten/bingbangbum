@@ -1185,3 +1185,7 @@
     </script>
 </body>
 </html>
+
+git mv oldname.html index.html
+git commit -m "rename to index.html"
+git push
