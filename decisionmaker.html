@@ -3,1302 +3,1387 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GovScope - Political Intelligence</title>
+    <title>GovScope - Map Explorer</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f8f9fa;
+            background: #f8fafc;
+            color: #334155;
             line-height: 1.5;
+            height: 100vh;
+            overflow: hidden;
         }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
+        
+        .app-layout {
+            display: grid;
+            grid-template-columns: 30% 70%;
+            height: 100vh;
+        }
+        
+        .left-panel {
             background: white;
-            min-height: 100vh;
-        }
-
-        .header {
+            border-right: 1px solid #e2e8f0;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 24px;
-            background: #fff;
-            border-bottom: 1px solid #e9ecef;
+            flex-direction: column;
+            overflow: hidden;
         }
-
+        
+        .map-container {
+            background: #f1f5f9;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Header Section */
+        .panel-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e2e8f0;
+            background: white;
+        }
+        
         .logo {
-            font-size: 24px;
+            font-size: 1.8rem;
             font-weight: 700;
-            color: #0066cc;
+            color: #3b82f6;
+            margin-bottom: 20px;
         }
-
-        .header-controls {
+        
+        /* Breadcrumb Navigation */
+        .breadcrumb-nav {
             display: flex;
-            gap: 12px;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+            color: #64748b;
         }
-
-        .btn {
-            padding: 8px 16px;
-            border: 1px solid #dee2e6;
-            border-radius: 6px;
-            background: white;
+        
+        .breadcrumb-item {
+            color: #3b82f6;
+            text-decoration: none;
             cursor: pointer;
-            font-size: 14px;
+        }
+        
+        .breadcrumb-item:hover {
+            text-decoration: underline;
+        }
+        
+        .breadcrumb-separator {
+            color: #94a3b8;
+        }
+        
+        .breadcrumb-current {
+            color: #374151;
+            font-weight: 500;
+        }
+        
+        .view-selector {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .view-selector label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #64748b;
+        }
+        
+        .view-selector select {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            background: white;
+            min-width: 120px;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px 12px 40px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: #f8fafc;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background: white;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            font-size: 1rem;
+        }
+        
+        /* Filters Section */
+        .filters-section {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 24px;
+            min-height: 0;
+        }
+        
+        .filters-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 16px;
+        }
+        
+        /* Filter Display Mode Toggle */
+        .filter-display-toggle {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .toggle-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .toggle-options {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .toggle-option {
+            flex: 1;
+            padding: 6px 12px;
+            border: 1px solid #d1d5db;
+            background: white;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-align: center;
             transition: all 0.2s;
         }
-
-        .btn:hover {
-            background: #f8f9fa;
-        }
-
-        .btn-primary {
-            background: #0066cc;
+        
+        .toggle-option.active {
+            background: #3b82f6;
             color: white;
-            border-color: #0066cc;
+            border-color: #3b82f6;
         }
-
-        .main-layout {
-            display: flex;
-            height: calc(100vh - 70px);
-        }
-
-        .sidebar {
-            width: 400px;
-            background: #fff;
-            border-right: 1px solid #e9ecef;
-            padding: 24px;
-            overflow-y: auto;
-        }
-
-        .nav-breadcrumb {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            font-size: 14px;
-            color: #6c757d;
-        }
-
-        .breadcrumb-path {
-            display: flex;
-            align-items: center;
-        }
-
-        .nav-breadcrumb a {
-            color: #0066cc;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .nav-breadcrumb a:hover {
-            color: #0052a3;
-        }
-
-        .nav-separator {
-            margin: 0 8px;
-            color: #dee2e6;
-        }
-
-        .back-to-map {
-            padding: 6px 12px;
-            background: #0066cc;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: background 0.2s;
-            font-weight: 500;
-        }
-
-        .back-to-map:hover {
-            background: #0052a3;
-        }
-
-        .entity-header {
+        
+        .filter-group {
             margin-bottom: 24px;
         }
-
-        .entity-title {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 4px;
-            color: #212529;
-        }
-
-        .entity-subtitle {
-            color: #6c757d;
-            margin-bottom: 16px;
-            font-size: 16px;
-        }
-
-        .entity-badges {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 24px;
-        }
-
-        .badge {
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
+        
+        .filter-group label {
+            display: block;
+            font-size: 0.9rem;
             font-weight: 600;
-        }
-
-        .badge-premium {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .badge-health {
-            background: #cce5ff;
-            color: #0066cc;
-        }
-
-        .metric-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .metric-card {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: left;
-        }
-
-        .metric-label {
-            font-size: 13px;
-            color: #6c757d;
+            color: #374151;
             margin-bottom: 8px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
-
-        .metric-value {
-            font-size: 32px;
-            font-weight: 800;
-            color: #212529;
-            margin-bottom: 4px;
-            line-height: 1;
-        }
-
-        .metric-rating {
-            font-size: 14px;
-            color: #28a745;
-            font-weight: 600;
-        }
-
-        .overview-section {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
-
-        .overview-title {
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: #495057;
-            font-size: 16px;
-        }
-
-        .overview-list {
-            list-style: none;
-            font-size: 14px;
-            line-height: 1.8;
-        }
-
-        .overview-list li {
-            color: #6c757d;
-            margin-bottom: 6px;
-            padding-left: 8px;
+        
+        .multiselect-dropdown {
             position: relative;
         }
-
-        .overview-list li::before {
-            content: "•";
-            color: #0066cc;
+        
+        .multiselect-header {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: border-color 0.2s;
+        }
+        
+        .multiselect-header:hover {
+            border-color: #3b82f6;
+        }
+        
+        .multiselect-header.open {
+            border-color: #3b82f6;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        
+        .multiselect-arrow {
+            transition: transform 0.2s;
+            color: #64748b;
+        }
+        
+        .multiselect-header.open .multiselect-arrow {
+            transform: rotate(180deg);
+        }
+        
+        .multiselect-options {
             position: absolute;
+            top: 100%;
             left: 0;
-        }
-
-        .content-area {
-            flex: 1;
-            padding: 24px;
+            right: 0;
+            background: white;
+            border: 1px solid #3b82f6;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            max-height: 200px;
             overflow-y: auto;
+            z-index: 1000;
+            display: none;
         }
-
-        .tab-nav {
-            display: flex;
-            border-bottom: 2px solid #f1f3f4;
-            margin-bottom: 32px;
-            gap: 4px;
+        
+        .multiselect-options.open {
+            display: block;
         }
-
-        .tab-nav button {
-            padding: 16px 24px;
-            border: none;
-            background: none;
+        
+        .multiselect-option {
+            padding: 8px 12px;
             cursor: pointer;
-            font-size: 15px;
-            font-weight: 500;
-            color: #6c757d;
-            border-bottom: 3px solid transparent;
-            transition: all 0.2s ease;
-            position: relative;
-        }
-
-        .tab-nav button:hover {
-            color: #495057;
-            background: #f8f9fa;
-        }
-
-        .tab-nav button.active {
-            color: #0066cc;
-            border-bottom-color: #0066cc;
-            background: #f8f9fa;
-        }
-
-        .section-header {
-            margin-bottom: 24px;
-        }
-
-        .section-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: #212529;
-            margin-bottom: 8px;
-        }
-
-        .section-subtitle {
-            color: #6c757d;
-            font-size: 16px;
-        }
-
-        .decision-maker-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 32px;
-        }
-
-        .decision-maker-card {
-            background: white;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 16px;
-            transition: box-shadow 0.2s;
-            position: relative;
-        }
-
-        .decision-maker-card:hover {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .elected-indicator {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: #ffc107;
-            color: #212529;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 9px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .appointed-indicator {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: #6c757d;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 9px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .industry-match {
-            border: 2px solid #28a745;
-            background: linear-gradient(135deg, #f8fff9 0%, #e8f5e8 100%);
-        }
-
-        .industry-match::before {
-            content: "✦ KEY INDUSTRY";
-            position: absolute;
-            top: -1px;
-            left: 8px;
-            background: #28a745;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 0 0 3px 3px;
-            font-size: 8px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .industry-match .elected-indicator,
-        .industry-match .appointed-indicator {
-            top: 24px;
-        }
-
-        .dm-header {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 12px;
-        }
-
-        .dm-photo {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: 14px;
-            margin-right: 12px;
-            flex-shrink: 0;
-        }
-
-        .dm-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .dm-name {
-            font-size: 16px;
-            font-weight: 700;
-            color: #212529;
-            margin-bottom: 2px;
-            line-height: 1.2;
-        }
-
-        .dm-title {
-            color: #6c757d;
-            font-size: 12px;
-            margin-bottom: 4px;
-            line-height: 1.2;
-        }
-
-        .dm-tenure {
-            font-size: 10px;
-            color: #495057;
-            background: #f8f9fa;
-            padding: 2px 4px;
-            border-radius: 3px;
-            display: inline-block;
-        }
-
-        .dm-metrics {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
             gap: 8px;
-            margin-bottom: 12px;
+            transition: background 0.2s;
         }
-
-        .dm-metric {
-            text-align: center;
-            padding: 8px;
-            background: #f8f9fa;
-            border-radius: 6px;
+        
+        .multiselect-option:hover {
+            background: #f8fafc;
         }
-
-        .dm-metric-value {
-            font-size: 16px;
-            font-weight: 700;
-            color: #212529;
-            margin-bottom: 2px;
-        }
-
-        .dm-metric-label {
-            font-size: 9px;
-            color: #6c757d;
-            font-weight: 500;
-            line-height: 1.1;
-        }
-
-        .dm-rating {
-            font-size: 8px;
-            color: #28a745;
-            font-weight: 600;
-            margin-top: 2px;
-        }
-
-        .dm-background {
-            margin-bottom: 12px;
-        }
-
-        .dm-background-title {
-            font-weight: 600;
-            color: #495057;
-            margin-bottom: 6px;
-            font-size: 12px;
-        }
-
-        .dm-background-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 4px 0;
-            border-bottom: 1px solid #f1f3f4;
-            font-size: 11px;
-        }
-
-        .dm-background-item:last-child {
-            border-bottom: none;
-        }
-
-        .dm-role {
-            color: #495057;
-            font-weight: 500;
-            flex: 1;
-            margin-right: 8px;
-        }
-
-        .dm-years {
-            color: #6c757d;
-            font-size: 10px;
-            flex-shrink: 0;
-        }
-
-        .dm-contact {
-            background: #f8f9fa;
-            padding: 8px;
-            border-radius: 6px;
-            margin-top: 12px;
-        }
-
-        .dm-contact-title {
-            font-weight: 600;
-            color: #495057;
-            margin-bottom: 6px;
-            font-size: 11px;
-        }
-
-        .dm-contact-info {
-            font-size: 10px;
-            color: #6c757d;
-            line-height: 1.3;
-        }
-
-        .dm-contact-info a {
-            color: #0066cc;
-            text-decoration: none;
-        }
-
-        .influence-map {
-            background: white;
-            border: 1px solid #e9ecef;
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 24px;
-        }
-
-        .influence-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #495057;
-            margin-bottom: 16px;
-        }
-
-        .influence-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-        }
-
-        .influence-item {
-            background: #f8f9fa;
-            padding: 16px;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .influence-category {
-            font-weight: 600;
-            color: #495057;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-        .influence-level {
-            font-size: 12px;
-            color: #6c757d;
-        }
-
-        .data-confidence {
-            background: #f8f9fa;
-            border-left: 4px solid #28a745;
-            padding: 16px;
-            margin-top: 24px;
-            border-radius: 0 8px 8px 0;
-        }
-
-        .confidence-title {
-            font-weight: 600;
-            color: #155724;
-            margin-bottom: 8px;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-        }
-
-        .confidence-icon {
+        
+        .multiselect-option input[type="checkbox"] {
             width: 16px;
             height: 16px;
-            background: #28a745;
-            border-radius: 50%;
-            margin-right: 8px;
+            accent-color: #3b82f6;
+        }
+        
+        .option-label {
+            flex: 1;
+            font-size: 0.9rem;
+            color: #374151;
+        }
+        
+        .option-count {
+            background: #e2e8f0;
+            color: #64748b;
+            font-size: 0.8rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+        
+        .option-count.active {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .advanced-filters {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #f1f5f9;
+        }
+        
+        .advanced-toggle {
+            background: none;
+            border: none;
+            color: #3b82f6;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+            padding: 0;
+        }
+        
+        .advanced-toggle:hover {
+            text-decoration: underline;
+        }
+        
+        .advanced-content {
+            display: none;
+            margin-top: 16px;
+        }
+        
+        .advanced-content.expanded {
+            display: block;
+        }
+        
+        .range-slider {
+            margin: 12px 0;
+        }
+        
+        .range-slider input {
+            width: 100%;
+            margin: 8px 0;
+        }
+        
+        .range-values {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+        
+        /* Performance Warning */
+        .performance-warning {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 16px;
+            display: none;
+        }
+        
+        .performance-warning.show {
+            display: block;
+        }
+        
+        .warning-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 4px;
+        }
+        
+        .warning-text {
+            font-size: 0.8rem;
+            color: #92400e;
+            margin-bottom: 8px;
+        }
+        
+        .warning-action {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+        
+        /* Resizable Results Summary */
+        .results-summary {
+            padding: 16px 24px;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            position: relative;
+            min-height: 80px;
+            resize: vertical;
+            overflow: auto;
+        }
+        
+        .resize-handle {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #e2e8f0;
+            cursor: ns-resize;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .results-summary:hover .resize-handle {
+            opacity: 1;
+        }
+        
+        .resize-handle:hover {
+            background: #3b82f6;
+        }
+        
+        .results-count {
+            font-size: 0.95rem;
+            color: #374151;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        
+        .results-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            padding: 6px 12px;
+            border: 1px solid #d1d5db;
+            background: white;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .action-btn:hover {
+            background: #f8fafc;
+        }
+        
+        .action-btn.primary {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        
+        .action-btn.primary:hover {
+            background: #2563eb;
+        }
+        
+        /* Getting Started Section */
+        .getting-started {
+            padding: 16px 24px;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .getting-started h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+        
+        .getting-started p {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        
+        .quick-stats {
+            background: #f8fafc;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .quick-stats-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+        
+        .quick-stats-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #3b82f6;
+        }
+        
+        .recently-viewed {
+            text-align: left;
+        }
+        
+        .recently-viewed h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+        
+        .recent-item {
+            padding: 6px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-bottom: 2px;
+        }
+        
+        .recent-item:hover {
+            background: #f1f5f9;
+        }
+        
+        .recent-name {
+            font-size: 0.85rem;
+            color: #374151;
+            font-weight: 500;
+        }
+        
+        .recent-details {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+        
+        /* Map Styles */
+        .map-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 10px;
+            color: #0369a1;
+            font-size: 1.4rem;
+            font-weight: 600;
+            position: relative;
         }
-
-        .confidence-text {
-            color: #155724;
-            font-size: 13px;
-            margin: 0;
-            line-height: 1.5;
+        
+        .map-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
-
-        .confidence-percentage {
-            font-weight: 700;
-            color: #155724;
+        
+        .map-control {
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+            font-weight: 600;
+            color: #374151;
         }
-
-        .methodology-detail {
-            margin-top: 8px;
-            font-size: 12px;
-            color: #6c757d;
-            font-style: italic;
+        
+        .map-control:hover {
+            background: #f8fafc;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-
-        .data-source {
-            background: #e3f2fd;
-            border-left: 4px solid #2196f3;
+        
+        /* Reference Boundary Toggle */
+        .boundary-toggle {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: white;
+            border-radius: 8px;
             padding: 12px 16px;
-            margin-top: 16px;
-            border-radius: 0 6px 6px 0;
-            font-size: 12px;
-            color: #1565c0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            min-width: 180px;
         }
-
-        .highlight-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        
+        .boundary-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .boundary-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+            cursor: pointer;
+        }
+        
+        .boundary-option input[type="checkbox"] {
+            accent-color: #3b82f6;
+        }
+        
+        .boundary-option label {
+            font-size: 0.85rem;
+            color: #374151;
+            cursor: pointer;
+        }
+        
+        /* Map Hover Tooltip */
+        .map-tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
             color: white;
-            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            pointer-events: none;
+            z-index: 1000;
+            display: none;
         }
-
-        .highlight-card .dm-name,
-        .highlight-card .dm-title,
-        .highlight-card .dm-tenure,
-        .highlight-card .dm-metric-value,
-        .highlight-card .dm-metric-label,
-        .highlight-card .dm-background-title,
-        .highlight-card .dm-role,
-        .highlight-card .dm-years,
-        .highlight-card .dm-rating {
-            color: white;
+        
+        .tooltip-name {
+            font-weight: 600;
+            margin-bottom: 2px;
         }
-
-        .highlight-card .dm-metric,
-        .highlight-card .dm-contact,
-        .highlight-card .dm-tenure {
-            background: rgba(255,255,255,0.15);
+        
+        .tooltip-metrics {
+            font-size: 0.8rem;
+            opacity: 0.9;
         }
-
-        .highlight-card .dm-background-item {
-            border-bottom-color: rgba(255,255,255,0.2);
+        
+        .map-legend {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            min-width: 220px;
         }
-
-        .highlight-card .dm-contact-title {
-            color: white;
+        
+        .legend-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 12px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+        }
+        
+        .legend-color {
+            width: 18px;
+            height: 12px;
+            border-radius: 3px;
+        }
+        
+        .color-excellent { background: #059669; }
+        .color-good { background: #0891b2; }
+        .color-fair { background: #ea580c; }
+        .color-poor { background: #dc2626; }
+        .color-no-data { background: #94a3b8; }
+        
+        .legend-count {
+            margin-left: auto;
+            color: #64748b;
+            font-size: 0.8rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .app-layout {
+                grid-template-columns: 35% 65%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .app-layout {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr;
+            }
+            
+            .left-panel {
+                max-height: 50vh;
+                overflow-y: auto;
+            }
+            
+            .map-legend, .boundary-toggle {
+                position: relative;
+                margin: 10px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="logo">GovScope</div>
-            <div class="header-controls">
-                <button class="btn">Share Analysis</button>
-                <button class="btn btn-primary">Export PDF</button>
-            </div>
-        </div>
-
-        <div class="main-layout">
-            <div class="sidebar">
-                <div class="nav-breadcrumb">
-                    <div class="breadcrumb-path">
-                        <a href="#">GovScope</a>
-                        <span class="nav-separator">></span>
-                        <a href="#">Map Explorer</a>
-                        <span class="nav-separator">></span>
-                        <span>Clackamas County</span>
-                    </div>
-                    <button class="back-to-map">← Back to Map</button>
+    <div class="app-layout">
+        <!-- Left Panel (30%) -->
+        <div class="left-panel">
+            <!-- Header -->
+            <div class="panel-header">
+                <div class="logo">GovScope</div>
+                
+                <!-- Breadcrumb Navigation -->
+                <div class="breadcrumb-nav" id="breadcrumb-nav" style="display: none;">
+                    <a href="#" class="breadcrumb-item" onclick="resetToUSView()">United States</a>
+                    <span class="breadcrumb-separator">></span>
+                    <a href="#" class="breadcrumb-item" onclick="resetToStateView()">Oregon</a>
+                    <span class="breadcrumb-separator">></span>
+                    <span class="breadcrumb-current">Counties</span>
                 </div>
                 
-                <div class="entity-header">
-                    <div class="entity-title">Clackamas County</div>
-                    <div class="entity-subtitle">Oregon • Population: 422,537</div>
-                    <div class="entity-badges">
-                        <span class="badge badge-premium">Premium Market</span>
-                        <span class="badge badge-health">Top 15% Financial Health</span>
-                    </div>
+                <div class="view-selector">
+                    <label for="entity-type">View by:</label>
+                    <select id="entity-type">
+                        <option value="county">County</option>
+                        <option value="city">City</option>
+                        <option value="school-district">School District</option>
+                        <option value="special-district">Special District</option>
+                    </select>
                 </div>
-
-                <div class="metric-grid">
-                    <div class="metric-card">
-                        <div class="metric-label">Financial Health Score</div>
-                        <div class="metric-value">96.3</div>
-                        <div class="metric-rating">Excellent</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-label">Implementation Readiness</div>
-                        <div class="metric-value">100</div>
-                        <div class="metric-rating">Exceptional</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-label">Revenue Stability Index</div>
-                        <div class="metric-value">91.2</div>
-                        <div class="metric-rating">Very Strong</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-label">Decision Maker Stability</div>
-                        <div class="metric-value">87.4</div>
-                        <div class="metric-rating">Strong</div>
-                    </div>
-                </div>
-
-                <div class="overview-section">
-                    <div class="overview-title">Clackamas County Government Ecosystem</div>
-                    <ul class="overview-list">
-                        <li><strong>Cities & Towns:</strong> 13 municipalities including Lake Oswego, Milwaukie, West Linn, Oregon City, Tigard</li>
-                        <li><strong>School Districts:</strong> 15 districts including Lake Oswego SD, West Linn-Wilsonville SD, North Clackamas SD</li>
-                        <li><strong>Special Districts:</strong> 47 districts including Fire Districts, Water Authorities, Library Districts</li>
-                        <li><strong>Key Industries:</strong> Healthcare, Technology, Manufacturing, Professional Services</li>
-                    </ul>
+                
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" placeholder="Search by name, location, or ID..." onkeyup="handleSearch(this.value)">
                 </div>
             </div>
-
-            <div class="content-area">
-                <div class="tab-nav">
-                    <button onclick="showTab('financial-intelligence')">Financial Intelligence</button>
-                    <button onclick="showTab('market-opportunities')">Market Opportunities</button>
-                    <button onclick="showTab('workforce-analysis')">Workforce Analysis</button>
-                    <button onclick="showTab('implementation-capacity')">Implementation Capacity</button>
-                    <button class="active" onclick="showTab('political-intelligence')">Political Intelligence</button>
+            
+            <!-- Filters -->
+            <div class="filters-section">
+                <div class="filters-title">Filters</div>
+                
+                <!-- Performance Warning -->
+                <div class="performance-warning" id="performance-warning">
+                    <div class="warning-title">⚠️ Too Many Entities</div>
+                    <div class="warning-text">Showing 15,000+ entities may affect performance. Consider zooming in or applying more filters.</div>
+                    <button class="warning-action" onclick="applyPerformanceFilter()">Apply Recommended Filters</button>
                 </div>
-
-                <div class="section-header">
-                    <h2 class="section-title">Political Intelligence</h2>
-                    <p class="section-subtitle">Decision maker profiles, stability analysis, and procurement influence mapping</p>
+                
+                <!-- Filter Display Toggle -->
+                <div class="filter-display-toggle">
+                    <div class="toggle-title">Map Display Mode</div>
+                    <div class="toggle-options">
+                        <div class="toggle-option active" onclick="setDisplayMode('highlight')">Highlight Matches</div>
+                        <div class="toggle-option" onclick="setDisplayMode('greyout')">Grey Out Others</div>
+                    </div>
                 </div>
-
-                <!-- Elected Officials Section -->
-                <div style="margin-bottom: 40px;">
-                    <h3 style="font-size: 20px; font-weight: 600; color: #ffc107; margin-bottom: 20px; display: flex; align-items: center;">
-                        <span style="width: 12px; height: 12px; background: #ffc107; border-radius: 50%; margin-right: 8px;"></span>
-                        Elected Officials
-                    </h3>
+                
+                <div class="filter-group">
+                    <label>Financial Health Score</label>
+                    <div class="multiselect-dropdown">
+                        <div class="multiselect-header" onclick="toggleDropdown(this)">
+                            <span class="selected-text">Excellent, Good (469 entities)</span>
+                            <span class="multiselect-arrow">▼</span>
+                        </div>
+                        <div class="multiselect-options">
+                            <div class="multiselect-option">
+                                <input type="checkbox" id="fh-excellent" checked>
+                                <label for="fh-excellent" class="option-label">Excellent (90-100)</label>
+                                <span class="option-count active">127</span>
+                            </div>
+                            <div class="multiselect-option">
+                                <input type="checkbox" id="fh-good" checked>
+                                <label for="fh-good" class="option-label">Good (70-89)</label>
+                                <span class="option-count active">342</span>
+                            </div>
+                            <div class="multiselect-option">
+                                <input type="checkbox" id="fh-fair">
+                                <label for="fh-fair" class="option-label">Fair (50-69)</label>
+                                <span class="option-count">189</span>
+                            </div>
+                            <div class="multiselect-option">
+                                <input type="checkbox" id="fh-poor">
+                                <label for="fh-poor" class="option-label">Poor (0-49)</label>
+                                <span class="option-count">45</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Revenue Stability Score</label>
+                    <div class="multiselect-dropdown">
+                        <div class="multiselect-header" onclick="toggleDropdown(this)">
+                            <span class="selected-text">Very Strong, Strong (443 entities)</span>
+                            <span class="multiselect-arrow">▼</span>
+                        </div>
+                        <div class="multiselect-options">
+                            <div class="multiselect-option">
+                                <input type="checkbox" id="rs-very-strong" checked>
+                                <label for="rs-very-strong" class="option-label">Very Strong (90-100)</label>
+                                <span class="option-count active">156</span>
+                            </div>
+                            <div class="multiselect-option">
+                                <input type="checkbox" id="rs-strong" checked>
+                                <label for="rs-strong" class="option-label">Strong (70-89)</label>
+                                <span class="option-count active">287</span>
+                            </div>
+                            <div class="multiselect-option">
+                                <input type="checkbox" id="rs-moderate">
+                                <label for="rs-moderate" class="option-label">Moderate (50-69)</label>
+                                <span class="option-count">198</span>
+                            </div>
+                            <div class="multiselect-option">
+                                <input type="checkbox" id="rs-weak">
+                                <label for="rs-weak" class="option-label">Weak (0-49)</label>
+                                <span class="option-count">62</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Total Expenditures</label>
+                    <div class="multiselect-dropdown">
+                        <div class="multiselect-header" onclick="toggleDropdown(this)">
+                            <span class="selected-text">All budget sizes (703 entities)</span>
+                            <span class="multiselect-arrow">▼</span>
+                        </div>
+                        <div class="multiselect-options">
+                            <div class="multiselect-option">
+                                <input type="checkbox" id="te-100m">
+                                <label for="te-100m" class="option-label">$100M+ annually</label>
+                                <span class="option-count">89</span>
+                            </div>
+                            <div class="multiselect-option">
+                                <input type="checkbox" id="te-50m">
+                                <label for="te-50m" class="option-label">$50M - $100M annually</label>
+                                <span class="option-count">156</span>
+                            </div>
+                            <div class="multiselect-option">
+                                <input type="checkbox" id="te-10m">
+                                <label for="te-10m" class="option-label">$10M - $50M annually</label>
+                                <span class="option-count">298</span>
+                            </div>
+                            <div class="multiselect-option">
+                                <input type="checkbox" id="te-under10m">
+                                <label for="te-under10m" class="option-label">Under $10M annually</label>
+                                <span class="option-count">160</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Workforce Analysis</label>
+                    <div class="multiselect-dropdown">
+                        <div class="multiselect-header" onclick="toggleDropdown(this)">
+                            <span class="selected-text">All workforce sizes (703 entities)</span>
+                            <span class="multiselect-arrow">▼</span>
+                        </div>
+                        <div class="multiselect-options">
+                            <div class="multiselect-option">
+                                <input type="checkbox" id="wa-large">
+                                <label for="wa-large" class="option-label">Large workforce (1,000+ employees)</label>
+                                <span class="option-count">234</span>
+                            </div>
+                            <div class="multiselect-option">
+                                <input type="checkbox" id="wa-medium">
+                                <label for="wa-medium" class="option-label">Medium workforce (500-999 employees)</label>
+                                <span class="option-count">312</span>
+                            </div>
+                            <div class="multiselect-option">
+                                <input type="checkbox" id="wa-small">
+                                <label for="wa-small" class="option-label">Small workforce (100-499 employees)</label>
+                                <span class="option-count">157</span>
+                            </div>
+                            <div class="multiselect-option">
+                                <input type="checkbox" id="wa-premium">
+                                <label for="wa-premium" class="option-label">Premium compensation (Above market avg)</label>
+                                <span class="option-count">145</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="advanced-filters">
+                    <button class="advanced-toggle" onclick="toggleAdvanced()">
+                        <span id="advanced-icon">▼</span>
+                        Advanced Filters
+                    </button>
                     
-                    <div class="decision-maker-grid">
-                        <!-- County Commission Chair - Elected -->
-                        <div class="decision-maker-card highlight-card">
-                            <div class="elected-indicator">Elected</div>
-                            <div class="dm-header">
-                                <div class="dm-photo">TS</div>
-                                <div class="dm-info">
-                                    <div class="dm-name">Tootie Smith</div>
-                                    <div class="dm-title">County Commission Chair</div>
-                                    <div class="dm-tenure">6 years (2019-2025)</div>
-                                </div>
-                            </div>
-
-                            <div class="dm-metrics">
-                                <div class="dm-metric">
-                                    <div class="dm-metric-value">85th</div>
-                                    <div class="dm-metric-label">Stability Percentile</div>
-                                    <div class="dm-rating">Top 15% Nationally</div>
-                                </div>
-                                <div class="dm-metric">
-                                    <div class="dm-metric-value">75th</div>
-                                    <div class="dm-metric-label">Industry Percentile</div>
-                                    <div class="dm-rating">Top 25% OR Counties</div>
-                                </div>
-                            </div>
-
-                            <div class="dm-background">
-                                <div class="dm-background-title">Background</div>
-                                <div class="dm-background-item">
-                                    <span class="dm-role">Business Owner/Consultant</span>
-                                    <span class="dm-years">15+ yrs</span>
-                                </div>
-                                <div class="dm-background-item">
-                                    <span class="dm-role">Former State Representative</span>
-                                    <span class="dm-years">8 yrs</span>
-                                </div>
-                            </div>
-
-                            <div class="dm-contact">
-                                <div class="dm-contact-title">Contact</div>
-                                <div class="dm-contact-info">
-                                    <div><a href="mailto:tsmith@clackamas.us">tsmith@clackamas.us</a></div>
-                                    <div>(503) 655-8581</div>
+                    <div class="advanced-content" id="advanced-content">
+                        <div class="filter-group">
+                            <label>Population Range</label>
+                            <div class="range-slider">
+                                <input type="range" min="0" max="1000000" value="50000" id="pop-min">
+                                <input type="range" min="0" max="1000000" value="500000" id="pop-max">
+                                <div class="range-values">
+                                    <span>50K</span>
+                                    <span>500K</span>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Technology-Focused Commissioner - Elected & Industry Match -->
-                        <div class="decision-maker-card industry-match">
-                            <div class="elected-indicator">Elected</div>
-                            <div class="dm-header">
-                                <div class="dm-photo">MS</div>
-                                <div class="dm-info">
-                                    <div class="dm-name">Mark Shull</div>
-                                    <div class="dm-title">County Commissioner, District 1</div>
-                                    <div class="dm-tenure">4 years (2021-2025)</div>
+                        
+                        <div class="filter-group">
+                            <label>Market Tier</label>
+                            <div class="multiselect-dropdown">
+                                <div class="multiselect-header" onclick="toggleDropdown(this)">
+                                    <span class="selected-text">All market tiers (703 entities)</span>
+                                    <span class="multiselect-arrow">▼</span>
                                 </div>
-                            </div>
-
-                            <div class="dm-metrics">
-                                <div class="dm-metric">
-                                    <div class="dm-metric-value">80th</div>
-                                    <div class="dm-metric-label">Stability Percentile</div>
-                                    <div class="dm-rating">Top 20% Nationally</div>
-                                </div>
-                                <div class="dm-metric">
-                                    <div class="dm-metric-value">95th</div>
-                                    <div class="dm-metric-label">Industry Percentile</div>
-                                    <div class="dm-rating">Top 5% OR Counties</div>
-                                </div>
-                            </div>
-
-                            <div class="dm-background">
-                                <div class="dm-background-title">Background</div>
-                                <div class="dm-background-item">
-                                    <span class="dm-role">Software Engineering Manager</span>
-                                    <span class="dm-years">12 yrs</span>
-                                </div>
-                                <div class="dm-background-item">
-                                    <span class="dm-role">Technology Consultant</span>
-                                    <span class="dm-years">8 yrs</span>
-                                </div>
-                                <div class="dm-background-item">
-                                    <span class="dm-role">Startup CTO</span>
-                                    <span class="dm-years">6 yrs</span>
-                                </div>
-                            </div>
-
-                            <div class="dm-contact">
-                                <div class="dm-contact-title">Contact</div>
-                                <div class="dm-contact-info">
-                                    <div><a href="mailto:mshull@clackamas.us">mshull@clackamas.us</a></div>
-                                    <div>(503) 655-8583</div>
+                                <div class="multiselect-options">
+                                    <div class="multiselect-option">
+                                        <input type="checkbox" id="mt-premium">
+                                        <label for="mt-premium" class="option-label">Premium Market</label>
+                                        <span class="option-count">67</span>
+                                    </div>
+                                    <div class="multiselect-option">
+                                        <input type="checkbox" id="mt-emerging">
+                                        <label for="mt-emerging" class="option-label">Emerging Market</label>
+                                        <span class="option-count">145</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- County Commissioner District 2 - Elected -->
-                        <div class="decision-maker-card">
-                            <div class="elected-indicator">Elected</div>
-                            <div class="dm-header">
-                                <div class="dm-photo">PH</div>
-                                <div class="dm-info">
-                                    <div class="dm-name">Paul Holvey</div>
-                                    <div class="dm-title">County Commissioner, District 2</div>
-                                    <div class="dm-tenure">8 years (2017-2025)</div>
+                        
+                        <div class="filter-group">
+                            <label>Geographic Region</label>
+                            <div class="multiselect-dropdown">
+                                <div class="multiselect-header" onclick="toggleDropdown(this)">
+                                    <span class="selected-text">West (156 entities)</span>
+                                    <span class="multiselect-arrow">▼</span>
                                 </div>
-                            </div>
-
-                            <div class="dm-metrics">
-                                <div class="dm-metric">
-                                    <div class="dm-metric-value">90th</div>
-                                    <div class="dm-metric-label">Stability Percentile</div>
-                                    <div class="dm-rating">Top 10% Nationally</div>
-                                </div>
-                                <div class="dm-metric">
-                                    <div class="dm-metric-value">69th</div>
-                                    <div class="dm-metric-label">Industry Percentile</div>
-                                    <div class="dm-rating">Top 30% OR Counties</div>
-                                </div>
-                            </div>
-
-                            <div class="dm-background">
-                                <div class="dm-background-title">Background</div>
-                                <div class="dm-background-item">
-                                    <span class="dm-role">Labor Union Leadership</span>
-                                    <span class="dm-years">18 yrs</span>
-                                </div>
-                                <div class="dm-background-item">
-                                    <span class="dm-role">State Representative</span>
-                                    <span class="dm-years">12 yrs</span>
-                                </div>
-                            </div>
-
-                            <div class="dm-contact">
-                                <div class="dm-contact-title">Contact</div>
-                                <div class="dm-contact-info">
-                                    <div><a href="mailto:pholvey@clackamas.us">pholvey@clackamas.us</a></div>
-                                    <div>(503) 655-8582</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Sheriff - Elected -->
-                        <div class="decision-maker-card">
-                            <div class="elected-indicator">Elected</div>
-                            <div class="dm-header">
-                                <div class="dm-photo">AJ</div>
-                                <div class="dm-info">
-                                    <div class="dm-name">Angela Johnson</div>
-                                    <div class="dm-title">Sheriff</div>
-                                    <div class="dm-tenure">6 years (2019-2027)</div>
-                                </div>
-                            </div>
-
-                            <div class="dm-metrics">
-                                <div class="dm-metric">
-                                    <div class="dm-metric-value">85th</div>
-                                    <div class="dm-metric-label">Stability Percentile</div>
-                                    <div class="dm-rating">Top 15% Nationally</div>
-                                </div>
-                                <div class="dm-metric">
-                                    <div class="dm-metric-value">72nd</div>
-                                    <div class="dm-metric-label">Industry Percentile</div>
-                                    <div class="dm-rating">Top 25% OR Counties</div>
-                                </div>
-                            </div>
-
-                            <div class="dm-background">
-                                <div class="dm-background-title">Background</div>
-                                <div class="dm-background-item">
-                                    <span class="dm-role">Law Enforcement Leadership</span>
-                                    <span class="dm-years">22 yrs</span>
-                                </div>
-                                <div class="dm-background-item">
-                                    <span class="dm-role">Emergency Management</span>
-                                    <span class="dm-years">8 yrs</span>
-                                </div>
-                            </div>
-
-                            <div class="dm-contact">
-                                <div class="dm-contact-title">Contact</div>
-                                <div class="dm-contact-info">
-                                    <div><a href="mailto:ajohnson@clackamas.us">ajohnson@clackamas.us</a></div>
-                                    <div>(503) 655-8211</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- District Attorney - Elected -->
-                        <div class="decision-maker-card">
-                            <div class="elected-indicator">Elected</div>
-                            <div class="dm-header">
-                                <div class="dm-photo">JF</div>
-                                <div class="dm-info">
-                                    <div class="dm-name">John Foote</div>
-                                    <div class="dm-title">District Attorney</div>
-                                    <div class="dm-tenure">12 years (2013-2027)</div>
-                                </div>
-                            </div>
-
-                            <div class="dm-metrics">
-                                <div class="dm-metric">
-                                    <div class="dm-metric-value">95th</div>
-                                    <div class="dm-metric-label">Stability Percentile</div>
-                                    <div class="dm-rating">Top 5% Nationally</div>
-                                </div>
-                                <div class="dm-metric">
-                                    <div class="dm-metric-value">65th</div>
-                                    <div class="dm-metric-label">Industry Percentile</div>
-                                    <div class="dm-rating">Top 35% OR Counties</div>
-                                </div>
-                            </div>
-
-                            <div class="dm-background">
-                                <div class="dm-background-title">Background</div>
-                                <div class="dm-background-item">
-                                    <span class="dm-role">Criminal Law Practice</span>
-                                    <span class="dm-years">20+ yrs</span>
-                                </div>
-                                <div class="dm-background-item">
-                                    <span class="dm-role">Prosecutorial Leadership</span>
-                                    <span class="dm-years">15 yrs</span>
-                                </div>
-                            </div>
-
-                            <div class="dm-contact">
-                                <div class="dm-contact-title">Contact</div>
-                                <div class="dm-contact-info">
-                                    <div><a href="mailto:jfoote@clackamas.us">jfoote@clackamas.us</a></div>
-                                    <div>(503) 655-8431</div>
+                                <div class="multiselect-options">
+                                    <div class="multiselect-option">
+                                        <input type="checkbox" id="gr-west" checked>
+                                        <label for="gr-west" class="option-label">West</label>
+                                        <span class="option-count active">156</span>
+                                    </div>
+                                    <div class="multiselect-option">
+                                        <input type="checkbox" id="gr-south">
+                                        <label for="gr-south" class="option-label">South</label>
+                                        <span class="option-count">287</span>
+                                    </div>
+                                    <div class="multiselect-option">
+                                        <input type="checkbox" id="gr-northeast">
+                                        <label for="gr-northeast" class="option-label">Northeast</label>
+                                        <span class="option-count">124</span>
+                                    </div>
+                                    <div class="multiselect-option">
+                                        <input type="checkbox" id="gr-midwest">
+                                        <label for="gr-midwest" class="option-label">Midwest</label>
+                                        <span class="option-count">136</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Appointed Executives Section -->
-                <div style="margin-bottom: 40px;">
-                    <h3 style="font-size: 20px; font-weight: 600; color: #6c757d; margin-bottom: 20px; display: flex; align-items: center;">
-                        <span style="width: 12px; height: 12px; background: #6c757d; border-radius: 50%; margin-right: 8px;"></span>
-                        Appointed Executives
-                    </h3>
-
-                    <div class="decision-maker-grid">
-                        <!-- County Administrator - Appointed -->
-                        <div class="decision-maker-card">
-                            <div class="appointed-indicator">Appointed</div>
-                            <div class="dm-header">
-                                <div class="dm-photo">GB</div>
-                                <div class="dm-info">
-                                    <div class="dm-name">Gary Barth</div>
-                                    <div class="dm-title">County Administrator</div>
-                                    <div class="dm-tenure">8 years (2016-2024)</div>
-                                </div>
-                            </div>
-
-                            <div class="dm-metrics">
-                                <div class="dm-metric">
-                                    <div class="dm-metric-value">95th</div>
-                                    <div class="dm-metric-label">Stability Percentile</div>
-                                    <div class="dm-rating">Top 5% Nationally</div>
-                                </div>
-                                <div class="dm-metric">
-                                    <div class="dm-metric-value">68th</div>
-                                    <div class="dm-metric-label">Industry Percentile</div>
-                                    <div class="dm-rating">Top 32% OR Counties</div>
-                                </div>
-                            </div>
-
-                            <div class="dm-background">
-                                <div class="dm-background-title">Background</div>
-                                <div class="dm-background-item">
-                                    <span class="dm-role">Public Administration</span>
-                                    <span class="dm-years">20+ yrs</span>
-                                </div>
-                                <div class="dm-background-item">
-                                    <span class="dm-role">Municipal Finance Director</span>
-                                    <span class="dm-years">10 yrs</span>
-                                </div>
-                            </div>
-
-                            <div class="dm-contact">
-                                <div class="dm-contact-title">Contact</div>
-                                <div class="dm-contact-info">
-                                    <div><a href="mailto:gbarth@clackamas.us">gbarth@clackamas.us</a></div>
-                                    <div>(503) 655-8577</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- IT Director - Appointed & Industry Match -->
-                        <div class="decision-maker-card industry-match">
-                            <div class="appointed-indicator">Appointed</div>
-                            <div class="dm-header">
-                                <div class="dm-photo">SM</div>
-                                <div class="dm-info">
-                                    <div class="dm-name">Sarah Miller</div>
-                                    <div class="dm-title">IT Director</div>
-                                    <div class="dm-tenure">3 years (2022-2025)</div>
-                                </div>
-                            </div>
-
-                            <div class="dm-metrics">
-                                <div class="dm-metric">
-                                    <div class="dm-metric-value">76th</div>
-                                    <div class="dm-metric-label">Stability Percentile</div>
-                                    <div class="dm-rating">Top 24% Nationally</div>
-                                </div>
-                                <div class="dm-metric">
-                                    <div class="dm-metric-value">98th</div>
-                                    <div class="dm-metric-label">Industry Percentile</div>
-                                    <div class="dm-rating">Top 2% OR Counties</div>
-                                </div>
-                            </div>
-
-                            <div class="dm-background">
-                                <div class="dm-background-title">Background</div>
-                                <div class="dm-background-item">
-                                    <span class="dm-role">Enterprise IT Director</span>
-                                    <span class="dm-years">8 yrs</span>
-                                </div>
-                                <div class="dm-background-item">
-                                    <span class="dm-role">Cybersecurity Specialist</span>
-                                    <span class="dm-years">6 yrs</span>
-                                </div>
-                                <div class="dm-background-item">
-                                    <span class="dm-role">Systems Architecture</span>
-                                    <span class="dm-years">10 yrs</span>
-                                </div>
-                            </div>
-
-                            <div class="dm-contact">
-                                <div class="dm-contact-title">Contact</div>
-                                <div class="dm-contact-info">
-                                    <div><a href="mailto:smiller@clackamas.us">smiller@clackamas.us</a></div>
-                                    <div>(503) 655-8220</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- CFO - Appointed -->
-                        <div class="decision-maker-card">
-                            <div class="appointed-indicator">Appointed</div>
-                            <div class="dm-header">
-                                <div class="dm-photo">MW</div>
-                                <div class="dm-info">
-                                    <div class="dm-name">Michelle Wong</div>
-                                    <div class="dm-title">Chief Financial Officer</div>
-                                    <div class="dm-tenure">5 years (2020-2025)</div>
-                                </div>
-                            </div>
-
-                            <div class="dm-metrics">
-                                <div class="dm-metric">
-                                    <div class="dm-metric-value">85th</div>
-                                    <div class="dm-metric-label">Stability Percentile</div>
-                                    <div class="dm-rating">Top 15% Nationally</div>
-                                </div>
-                                <div class="dm-metric">
-                                    <div class="dm-metric-value">85th</div>
-                                    <div class="dm-metric-label">Industry Percentile</div>
-                                    <div class="dm-rating">Top 15% OR Counties</div>
-                                </div>
-                            </div>
-
-                            <div class="dm-background">
-                                <div class="dm-background-title">Background</div>
-                                <div class="dm-background-item">
-                                    <span class="dm-role">Corporate Finance Director</span>
-                                    <span class="dm-years">12 yrs</span>
-                                </div>
-                                <div class="dm-background-item">
-                                    <span class="dm-role">CPA - Public Accounting</span>
-                                    <span class="dm-years">8 yrs</span>
-                                </div>
-                            </div>
-
-                            <div class="dm-contact">
-                                <div class="dm-contact-title">Contact</div>
-                                <div class="dm-contact-info">
-                                    <div><a href="mailto:mwong@clackamas.us">mwong@clackamas.us</a></div>
-                                    <div>(503) 655-8575</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Health Director - Appointed & Industry Match -->
-                        <div class="decision-maker-card industry-match">
-                            <div class="appointed-indicator">Appointed</div>
-                            <div class="dm-header">
-                                <div class="dm-photo">DL</div>
-                                <div class="dm-info">
-                                    <div class="dm-name">Dr. David Lee</div>
-                                    <div class="dm-title">Health Director</div>
-                                    <div class="dm-tenure">4 years (2021-2025)</div>
-                                </div>
-                            </div>
-
-                            <div class="dm-metrics">
-                                <div class="dm-metric">
-                                    <div class="dm-metric-value">81st</div>
-                                    <div class="dm-metric-label">Stability Percentile</div>
-                                    <div class="dm-rating">Top 19% Nationally</div>
-                                </div>
-                                <div class="dm-metric">
-                                    <div class="dm-metric-value">95th</div>
-                                    <div class="dm-metric-label">Industry Percentile</div>
-                                    <div class="dm-rating">Top 5% OR Counties</div>
-                                </div>
-                            </div>
-
-                            <div class="dm-background">
-                                <div class="dm-background-title">Background</div>
-                                <div class="dm-background-item">
-                                    <span class="dm-role">Healthcare System CIO</span>
-                                    <span class="dm-years">8 yrs</span>
-                                </div>
-                                <div class="dm-background-item">
-                                    <span class="dm-role">Public Health Physician</span>
-                                    <span class="dm-years">12 yrs</span>
-                                </div>
-                            </div>
-
-                            <div class="dm-contact">
-                                <div class="dm-contact-title">Contact</div>
-                                <div class="dm-contact-info">
-                                    <div><a href="mailto:dlee@clackamas.us">dlee@clackamas.us</a></div>
-                                    <div>(503) 655-8401</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- HR Director - Appointed -->
-                        <div class="decision-maker-card">
-                            <div class="appointed-indicator">Appointed</div>
-                            <div class="dm-header">
-                                <div class="dm-photo">RT</div>
-                                <div class="dm-info">
-                                    <div class="dm-name">Rebecca Taylor</div>
-                                    <div class="dm-title">HR Director</div>
-                                    <div class="dm-tenure">7 years (2018-2025)</div>
-                                </div>
-                            </div>
-
-                            <div class="dm-metrics">
-                                <div class="dm-metric">
-                                    <div class="dm-metric-value">91st</div>
-                                    <div class="dm-metric-label">Stability Percentile</div>
-                                    <div class="dm-rating">Top 9% Nationally</div>
-                                </div>
-                                <div class="dm-metric">
-                                    <div class="dm-metric-value">80th</div>
-                                    <div class="dm-metric-label">Industry Percentile</div>
-                                    <div class="dm-rating">Top 20% OR Counties</div>
-                                </div>
-                            </div>
-
-                            <div class="dm-background">
-                                <div class="dm-background-title">Background</div>
-                                <div class="dm-background-item">
-                                    <span class="dm-role">Corporate HR Executive</span>
-                                    <span class="dm-years">15 yrs</span>
-                                </div>
-                                <div class="dm-background-item">
-                                    <span class="dm-role">HRIS Implementation Lead</span>
-                                    <span class="dm-years">5 yrs</span>
-                                </div>
-                            </div>
-
-                            <div class="dm-contact">
-                                <div class="dm-contact-title">Contact</div>
-                                <div class="dm-contact-info">
-                                    <div><a href="mailto:rtaylor@clackamas.us">rtaylor@clackamas.us</a></div>
-                                    <div>(503) 655-8570</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Operations Director - Appointed -->
-                        <div class="decision-maker-card">
-                            <div class="appointed-indicator">Appointed</div>
-                            <div class="dm-header">
-                                <div class="dm-photo">JC</div>
-                                <div class="dm-info">
-                                    <div class="dm-name">James Chen</div>
-                                    <div class="dm-title">Operations Director</div>
-                                    <div class="dm-tenure">6 years (2019-2025)</div>
-                                </div>
-                            </div>
-
-                            <div class="dm-metrics">
-                                <div class="dm-metric">
-                                    <div class="dm-metric-value">88th</div>
-                                    <div class="dm-metric-label">Stability Percentile</div>
-                                    <div class="dm-rating">Top 12% Nationally</div>
-                                </div>
-                                <div class="dm-metric">
-                                    <div class="dm-metric-value">76th</div>
-                                    <div class="dm-metric-label">Industry Percentile</div>
-                                    <div class="dm-rating">Top 24% OR Counties</div>
-                                </div>
-                            </div>
-
-                            <div class="dm-background">
-                                <div class="dm-background-title">Background</div>
-                                <div class="dm-background-item">
-                                    <span class="dm-role">Municipal Operations</span>
-                                    <span class="dm-years">14 yrs</span>
-                                </div>
-                                <div class="dm-background-item">
-                                    <span class="dm-role">Process Improvement Lead</span>
-                                    <span class="dm-years">8 yrs</span>
-                                </div>
-                            </div>
-
-                            <div class="dm-contact">
-                                <div class="dm-contact-title">Contact</div>
-                                <div class="dm-contact-info">
-                                    <div><a href="mailto:jchen@clackamas.us">jchen@clackamas.us</a></div>
-                                    <div>(503) 655-8590</div>
-                                </div>
-                            </div>
-                        </div>
+            </div>
+            
+            <!-- Resizable Results Summary -->
+            <div class="results-summary">
+                <div class="resize-handle"></div>
+                <div class="results-count">469 counties match your criteria</div>
+                <div class="results-actions">
+                    <button class="action-btn">Clear All</button>
+                    <button class="action-btn primary">Save Filter</button>
+                    <button class="action-btn" onclick="jumpToEntity()">Jump to Entity</button>
+                </div>
+            </div>
+            
+            <!-- Getting Started -->
+            <div class="getting-started">
+                <h3>Get Started</h3>
+                <p>Select entities on the map to view detailed financial and workforce intelligence</p>
+                
+                <div class="quick-stats">
+                    <div class="quick-stats-title">Tracking Nationwide</div>
+                    <div class="quick-stats-value">3,143</div>
+                    <div style="font-size: 0.8rem; color: #64748b; margin-top: 4px;">Counties</div>
+                </div>
+                
+                <div class="recently-viewed">
+                    <h4>Recently Viewed</h4>
+                    <div class="recent-item" onclick="loadEntityDetail('Clackamas County')">
+                        <div class="recent-name">Clackamas County</div>
+                        <div class="recent-details">Oregon • Score: 96.3</div>
+                    </div>
+                    <div class="recent-item" onclick="loadEntityDetail('King County')">
+                        <div class="recent-name">King County</div>
+                        <div class="recent-details">Washington • Score: 94.1</div>
+                    </div>
+                    <div class="recent-item" onclick="loadEntityDetail('Alameda County')">
+                        <div class="recent-name">Alameda County</div>
+                        <div class="recent-details">California • Score: 91.7</div>
                     </div>
                 </div>
-
-                <div class="influence-map">
-                    <div class="influence-title">Procurement Influence Mapping</div>
-                    <div class="influence-grid">
-                        <div class="influence-item">
-                            <div class="influence-category">Budget Authority</div>
-                            <div class="influence-level">County Commission (Final Approval)</div>
-                        </div>
-                        <div class="influence-item">
-                            <div class="influence-category">Technology Decisions</div>
-                            <div class="influence-level">IT Director (Primary Influence)</div>
-                        </div>
-                        <div class="influence-item">
-                            <div class="influence-category">Contract Approval</div>
-                            <div class="influence-level">County Administrator (Process Owner)</div>
-                        </div>
-                        <div class="influence-item">
-                            <div class="influence-category">Policy Setting</div>
-                            <div class="influence-level">Commission Chair (Leadership)</div>
-                        </div>
-                        <div class="influence-item">
-                            <div class="influence-category">Implementation</div>
-                            <div class="influence-level">Department Heads (Execution)</div>
-                        </div>
-                        <div class="influence-item">
-                            <div class="influence-category">Vendor Relations</div>
-                            <div class="influence-level">Procurement Office (Management)</div>
-                        </div>
-                    </div>
+            </div>
+        </div>
+        
+        <!-- Map Container (70%) -->
+        <div class="map-container">
+            <div class="map-placeholder" id="map-placeholder">
+                Interactive Map of United States Counties
+                <div style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 0.9rem; opacity: 0.7;">
+                    Hover over entities to see details • Click to view full analysis
                 </div>
-
-                <div class="data-confidence">
-                    <div class="confidence-title">
-                        <span class="confidence-icon">✓</span>
-                        Decision Maker Intelligence
-                    </div>
-                    <p class="confidence-text">Political profiles with <span class="confidence-percentage">85% accuracy</span> based on official government records, professional backgrounds, and tenure analysis. Percentile rankings compare against 3,000+ comparable entities nationally.</p>
-                    <div class="methodology-detail">Methodology: Tenure stability scoring, industry experience weighting, procurement influence mapping</div>
+            </div>
+            
+            <!-- Map Hover Tooltip -->
+            <div class="map-tooltip" id="map-tooltip">
+                <div class="tooltip-name">Clackamas County</div>
+                <div class="tooltip-metrics">Financial Health: 96.3 • Budget: $122M</div>
+            </div>
+            
+            <div class="map-controls">
+                <div class="map-control" title="Zoom In" onclick="zoomIn()">+</div>
+                <div class="map-control" title="Zoom Out" onclick="zoomOut()">−</div>
+                <div class="map-control" title="Reset to US View" onclick="resetToUSView()">⌂</div>
+            </div>
+            
+            <!-- Reference Boundary Toggle -->
+            <div class="boundary-toggle">
+                <div class="boundary-title">Reference Boundaries</div>
+                <div class="boundary-option">
+                    <input type="checkbox" id="show-states" checked>
+                    <label for="show-states">Show State Outlines</label>
                 </div>
-                <div class="data-source">
-                    <strong>Data Sources:</strong> Ballotpedia, official government websites, LinkedIn profiles, state election records, staff directories
+                <div class="boundary-option">
+                    <input type="checkbox" id="show-counties">
+                    <label for="show-counties">Show County Boundaries</label>
+                </div>
+                <div class="boundary-option">
+                    <input type="checkbox" id="show-metro">
+                    <label for="show-metro">Show Metro Areas</label>
+                </div>
+            </div>
+            
+            <div class="map-legend">
+                <div class="legend-title">Financial Health Score</div>
+                <div class="legend-item">
+                    <div class="legend-color color-excellent"></div>
+                    <span>Excellent (90-100)</span>
+                    <span class="legend-count">127</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color color-good"></div>
+                    <span>Good (70-89)</span>
+                    <span class="legend-count">342</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color color-fair"></div>
+                    <span>Fair (50-69)</span>
+                    <span class="legend-count">189</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color color-poor"></div>
+                    <span>Poor (0-49)</span>
+                    <span class="legend-count">45</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color color-no-data"></div>
+                    <span>No Data</span>
+                    <span class="legend-count">23</span>
                 </div>
             </div>
         </div>
     </div>
-
+    
     <script>
-        function showTab(tabId) {
-            // This would integrate with the existing tab system
-            console.log('Showing tab:', tabId);
+        // Map state management
+        let currentView = 'us';
+        let currentEntityType = 'county';
+        let displayMode = 'highlight'; // or 'greyout'
+        
+        // Multiselect dropdown functionality
+        function toggleDropdown(header) {
+            const dropdown = header.parentElement;
+            const options = dropdown.querySelector('.multiselect-options');
+            const isOpen = options.classList.contains('open');
+            
+            // Close all other dropdowns
+            document.querySelectorAll('.multiselect-options.open').forEach(opt => {
+                opt.classList.remove('open');
+                opt.parentElement.querySelector('.multiselect-header').classList.remove('open');
+            });
+            
+            if (!isOpen) {
+                options.classList.add('open');
+                header.classList.add('open');
+            }
         }
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.multiselect-dropdown')) {
+                document.querySelectorAll('.multiselect-options.open').forEach(opt => {
+                    opt.classList.remove('open');
+                    opt.parentElement.querySelector('.multiselect-header').classList.remove('open');
+                });
+            }
+        });
+        
+        // Handle checkbox changes in multiselect
+        document.querySelectorAll('.multiselect-option input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const count = this.parentElement.querySelector('.option-count');
+                if (this.checked) {
+                    count.classList.add('active');
+                } else {
+                    count.classList.remove('active');
+                }
+                
+                updateDropdownHeader(this);
+                updateResultsCount();
+                updateMapDisplay();
+                checkPerformanceWarning();
+            });
+        });
+        
+        function updateDropdownHeader(checkbox) {
+            const dropdown = checkbox.closest('.multiselect-dropdown');
+            const header = dropdown.querySelector('.multiselect-header .selected-text');
+            const checkboxes = dropdown.querySelectorAll('input[type="checkbox"]:checked');
+            
+            if (checkboxes.length === 0) {
+                header.textContent = 'None selected (0 entities)';
+            } else if (checkboxes.length === 1) {
+                const label = checkboxes[0].nextElementSibling.textContent;
+                const count = checkboxes[0].parentElement.querySelector('.option-count').textContent;
+                header.textContent = `${label.split('(')[0].trim()} (${count} entities)`;
+            } else {
+                const labels = Array.from(checkboxes).map(cb => 
+                    cb.nextElementSibling.textContent.split('(')[0].trim()
+                );
+                const totalCount = Array.from(checkboxes).reduce((sum, cb) => {
+                    const countText = cb.parentElement.querySelector('.option-count').textContent;
+                    return sum + parseInt(countText);
+                }, 0);
+                header.textContent = `${labels.join(', ')} (${totalCount} entities)`;
+            }
+        }
+        
+        // Display mode toggle
+        function setDisplayMode(mode) {
+            displayMode = mode;
+            document.querySelectorAll('.toggle-option').forEach(opt => opt.classList.remove('active'));
+            event.target.classList.add('active');
+            updateMapDisplay();
+        }
+        
+        // Performance warning
+        function checkPerformanceWarning() {
+            const checkedFilters = document.querySelectorAll('input[type="checkbox"]:checked').length;
+            const entityCount = parseInt(document.querySelector('.results-count').textContent.split(' ')[0]);
+            
+            if (entityCount > 10000) {
+                document.getElementById('performance-warning').classList.add('show');
+            } else {
+                document.getElementById('performance-warning').classList.remove('show');
+            }
+        }
+        
+        function applyPerformanceFilter() {
+            // Apply recommended filters to reduce entity count
+            document.getElementById('fh-excellent').checked = true;
+            document.getElementById('fh-good').checked = true;
+            document.getElementById('fh-fair').checked = false;
+            document.getElementById('fh-poor').checked = false;
+            
+            // Update UI
+            document.querySelectorAll('.option-count').forEach(count => count.classList.remove('active'));
+            document.querySelector('#fh-excellent').parentElement.querySelector('.option-count').classList.add('active');
+            document.querySelector('#fh-good').parentElement.querySelector('.option-count').classList.add('active');
+            
+            updateDropdownHeader(document.getElementById('fh-excellent'));
+            updateResultsCount();
+            document.getElementById('performance-warning').classList.remove('show');
+        }
+        
+        // Map navigation
+        function resetToUSView() {
+            currentView = 'us';
+            document.getElementById('breadcrumb-nav').style.display = 'none';
+            console.log('Reset to US view');
+            updateMapDisplay();
+        }
+        
+        function resetToStateView() {
+            currentView = 'state';
+            updateBreadcrumb('Oregon', 'Counties');
+            console.log('Reset to state view');
+            updateMapDisplay();
+        }
+        
+        function updateBreadcrumb(state, level) {
+            const breadcrumb = document.getElementById('breadcrumb-nav');
+            breadcrumb.style.display = 'flex';
+            // Update breadcrumb content dynamically based on zoom level
+        }
+        
+        function zoomIn() {
+            console.log('Zoom in');
+            // If zoomed into state level, show breadcrumb
+            if (currentView === 'us') {
+                currentView = 'state';
+                updateBreadcrumb('Oregon', 'Counties');
+            }
+        }
+        
+        function zoomOut() {
+            console.log('Zoom out');
+            if (currentView === 'state') {
+                resetToUSView();
+            }
+        }
+        
+        // Search functionality
+        function handleSearch(query) {
+            if (query.length > 2) {
+                console.log('Searching for:', query);
+                // Implement search highlighting
+                simulateSearchResults(query);
+            }
+        }
+        
+        function simulateSearchResults(query) {
+            // Simulate search highlighting on map
+            console.log('Highlighting search results for:', query);
+        }
+        
+        function jumpToEntity() {
+            const query = document.querySelector('.search-box input').value;
+            if (query) {
+                console.log('Jumping to entity:', query);
+                // Zoom to specific entity
+                currentView = 'entity';
+                updateBreadcrumb('Oregon', 'Clackamas County');
+            }
+        }
+        
+        // Map hover functionality
+        document.getElementById('map-placeholder').addEventListener('mousemove', function(e) {
+            const tooltip = document.getElementById('map-tooltip');
+            const rect = this.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Simulate entity detection
+            if (x > 200 && x < 400 && y > 150 && y < 350) {
+                tooltip.style.display = 'block';
+                tooltip.style.left = (e.clientX + 10) + 'px';
+                tooltip.style.top = (e.clientY - 40) + 'px';
+            } else {
+                tooltip.style.display = 'none';
+            }
+        });
+        
+        document.getElementById('map-placeholder').addEventListener('mouseleave', function() {
+            document.getElementById('map-tooltip').style.display = 'none';
+        });
+        
+        // Map click functionality
+        document.getElementById('map-placeholder').addEventListener('click', function(e) {
+            const rect = this.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Simulate entity click
+            if (x > 200 && x < 400 && y > 150 && y < 350) {
+                loadEntityDetail('Clackamas County');
+            }
+        });
+        
+        function loadEntityDetail(entityName) {
+            console.log('Loading detailed view for:', entityName);
+            // This would transition to the Budget Intelligence or Workforce Analysis view
+            // while maintaining the map state and filter context
+            alert(`Loading detailed analysis for ${entityName}.\n\nThis would transition to the Budget Intelligence tab while preserving:\n• Current filter selections\n• Map zoom level and position\n• Navigation breadcrumbs`);
+        }
+        
+        // Advanced filters toggle
+        function toggleAdvanced() {
+            const content = document.getElementById('advanced-content');
+            const icon = document.getElementById('advanced-icon');
+            
+            content.classList.toggle('expanded');
+            icon.textContent = content.classList.contains('expanded') ? '▲' : '▼';
+        }
+        
+        // Entity type selector
+        document.getElementById('entity-type').addEventListener('change', function() {
+            currentEntityType = this.value;
+            console.log('Switched to entity type:', currentEntityType);
+            updateResultsCount();
+            updateMapDisplay();
+            checkPerformanceWarning();
+        });
+        
+        // Action buttons
+        document.querySelector('.action-btn:not(.primary):not([onclick])').addEventListener('click', function() {
+            // Clear all filters
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                cb.checked = false;
+                cb.parentElement.querySelector('.option-count').classList.remove('active');
+                updateDropdownHeader(cb);
+            });
+            updateResultsCount();
+            updateMapDisplay();
+        });
+        
+        document.querySelector('.action-btn.primary').addEventListener('click', function() {
+            console.log('Saving current filter configuration');
+            // Implement save filter functionality
+        });
+        
+        // Results count update
+        function updateResultsCount() {
+            const checkedFilters = document.querySelectorAll('input[type="checkbox"]:checked').length;
+            
+            let baseCount;
+            switch(currentEntityType) {
+                case 'county': baseCount = 3143; break;
+                case 'city': baseCount = 19495; break;
+                case 'school-district': baseCount = 13452; break;
+                case 'special-district': baseCount = 35000; break;
+                default: baseCount = 3143;
+            }
+            
+            // Calculate based on current selections
+            const filteredCount = checkedFilters > 0 ? 469 : baseCount;
+            
+            document.querySelector('.results-count').textContent = 
+                `${filteredCount.toLocaleString()} ${currentEntityType.replace('-', ' ')}s match your criteria`;
+        }
+        
+        function updateMapDisplay() {
+            console.log('Updating map display:', {
+                view: currentView,
+                entityType: currentEntityType,
+                displayMode: displayMode
+            });
+            // Implement map updates based on filters and display mode
+        }
+        
+        // Boundary toggle functionality
+        document.querySelectorAll('.boundary-option input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                console.log('Boundary toggle:', this.id, this.checked);
+                updateMapDisplay();
+            });
+        });
+        
+        // Drag to resize results summary
+        let isResizing = false;
+        let startY;
+        let startHeight;
+        
+        document.querySelector('.resize-handle').addEventListener('mousedown', function(e) {
+            isResizing = true;
+            startY = e.clientY;
+            startHeight = parseInt(document.defaultView.getComputedStyle(document.querySelector('.results-summary')).height, 10);
+            document.addEventListener('mousemove', doResize);
+            document.addEventListener('mouseup', stopResize);
+            e.preventDefault();
+        });
+        
+        function doResize(e) {
+            if (!isResizing) return;
+            const newHeight = startHeight - (e.clientY - startY);
+            if (newHeight > 60 && newHeight < 300) {
+                document.querySelector('.results-summary').style.height = newHeight + 'px';
+            }
+        }
+        
+        function stopResize() {
+            isResizing = false;
+            document.removeEventListener('mousemove', doResize);
+            document.removeEventListener('mouseup', stopResize);
+        }
+        
+        // Initialize default selections
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.multiselect-dropdown').forEach(dropdown => {
+                const firstCheckbox = dropdown.querySelector('input[type="checkbox"]');
+                if (firstCheckbox) {
+                    updateDropdownHeader(firstCheckbox);
+                }
+            });
+            
+            checkPerformanceWarning();
+        });
     </script>
 </body>
 </html>
