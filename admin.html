@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GovScope Admin - Civic Intelligence Command Center</title>
+    <title>GovScope Admin - Demo Management Portal</title>
     <style>
         * {
             margin: 0;
@@ -13,8 +13,8 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: #0f172a;
-            color: #e2e8f0;
+            background: #f8fafc;
+            color: #1e293b;
             line-height: 1.5;
         }
 
@@ -26,20 +26,20 @@
         /* Admin Sidebar */
         .admin-sidebar {
             width: 280px;
-            background: #1e293b;
-            border-right: 1px solid #334155;
+            background: white;
+            border-right: 1px solid #e2e8f0;
             flex-shrink: 0;
         }
 
         .admin-logo {
             padding: 24px;
-            border-bottom: 1px solid #334155;
+            border-bottom: 1px solid #e2e8f0;
         }
 
         .logo-text {
             font-size: 18px;
             font-weight: 700;
-            color: #3b82f6;
+            color: #2563eb;
             margin-bottom: 4px;
         }
 
@@ -71,22 +71,23 @@
             display: flex;
             align-items: center;
             padding: 12px 24px;
-            color: #94a3b8;
+            color: #64748b;
             text-decoration: none;
             border-left: 3px solid transparent;
             transition: all 0.2s;
             position: relative;
+            cursor: pointer;
         }
 
         .nav-item:hover {
-            background: #334155;
-            color: #e2e8f0;
+            background: #f1f5f9;
+            color: #334155;
         }
 
         .nav-item.active {
-            background: rgba(59, 130, 246, 0.1);
-            color: #3b82f6;
-            border-left-color: #3b82f6;
+            background: #eff6ff;
+            color: #2563eb;
+            border-left-color: #2563eb;
         }
 
         .nav-icon {
@@ -122,8 +123,8 @@
         }
 
         .admin-header {
-            background: #1e293b;
-            border-bottom: 1px solid #334155;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
             padding: 16px 32px;
             display: flex;
             justify-content: space-between;
@@ -133,7 +134,7 @@
         .header-title {
             font-size: 24px;
             font-weight: 600;
-            color: #e2e8f0;
+            color: #1e293b;
         }
 
         .header-actions {
@@ -147,7 +148,8 @@
             align-items: center;
             gap: 8px;
             padding: 8px 12px;
-            background: #059669;
+            background: #dcfce7;
+            color: #166534;
             border-radius: 6px;
             font-size: 12px;
             font-weight: 500;
@@ -156,7 +158,7 @@
         .status-dot {
             width: 8px;
             height: 8px;
-            background: #10b981;
+            background: #22c55e;
             border-radius: 50%;
             animation: pulse 2s infinite;
         }
@@ -171,20 +173,20 @@
             align-items: center;
             gap: 8px;
             padding: 8px 12px;
-            background: #334155;
+            background: #f8fafc;
             border-radius: 8px;
             cursor: pointer;
             transition: background 0.2s;
         }
 
         .admin-user-menu:hover {
-            background: #475569;
+            background: #e2e8f0;
         }
 
         .admin-avatar {
             width: 32px;
             height: 32px;
-            background: #3b82f6;
+            background: #2563eb;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -198,7 +200,7 @@
         .dashboard-content {
             padding: 32px;
             flex: 1;
-            background: #0f172a;
+            background: #f8fafc;
         }
 
         .dashboard-overview {
@@ -209,22 +211,12 @@
         }
 
         .metric-card {
-            background: #1e293b;
-            border: 1px solid #334155;
+            background: white;
+            border: 1px solid #e2e8f0;
             border-radius: 12px;
             padding: 24px;
             position: relative;
             overflow: hidden;
-        }
-
-        .metric-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
         }
 
         .metric-header {
@@ -236,25 +228,25 @@
 
         .metric-title {
             font-size: 14px;
-            color: #94a3b8;
+            color: #64748b;
             font-weight: 500;
         }
 
         .metric-icon {
             width: 40px;
             height: 40px;
-            background: rgba(59, 130, 246, 0.1);
+            background: #eff6ff;
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #3b82f6;
+            color: #2563eb;
         }
 
         .metric-value {
             font-size: 36px;
             font-weight: 700;
-            color: #e2e8f0;
+            color: #1e293b;
             margin-bottom: 8px;
         }
 
@@ -266,11 +258,11 @@
         }
 
         .metric-change.positive {
-            color: #22c55e;
+            color: #16a34a;
         }
 
         .metric-change.negative {
-            color: #ef4444;
+            color: #dc2626;
         }
 
         .metric-change.neutral {
@@ -286,24 +278,24 @@
         }
 
         .section-card {
-            background: #1e293b;
-            border: 1px solid #334155;
+            background: white;
+            border: 1px solid #e2e8f0;
             border-radius: 12px;
             overflow: hidden;
         }
 
         .section-header {
             padding: 20px 24px;
-            border-bottom: 1px solid #334155;
+            border-bottom: 1px solid #e2e8f0;
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
         }
 
         .section-title {
             font-size: 18px;
             font-weight: 600;
-            color: #e2e8f0;
+            color: #1e293b;
         }
 
         .section-content {
@@ -316,7 +308,7 @@
             align-items: center;
             gap: 12px;
             padding: 12px 0;
-            border-bottom: 1px solid #334155;
+            border-bottom: 1px solid #f1f5f9;
         }
 
         .activity-item:last-child {
@@ -326,7 +318,7 @@
         .activity-avatar {
             width: 32px;
             height: 32px;
-            background: #3b82f6;
+            background: #2563eb;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -342,7 +334,7 @@
         }
 
         .activity-text {
-            color: #e2e8f0;
+            color: #1e293b;
             font-size: 14px;
             margin-bottom: 4px;
         }
@@ -353,150 +345,36 @@
         }
 
         .activity-entity {
-            color: #3b82f6;
+            color: #2563eb;
             font-weight: 500;
-        }
-
-        /* Invitation Management */
-        .invite-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .invite-stat {
-            background: #334155;
-            border-radius: 8px;
-            padding: 16px;
-            text-align: center;
-        }
-
-        .invite-stat-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: #e2e8f0;
-            margin-bottom: 4px;
-        }
-
-        .invite-stat-label {
-            font-size: 12px;
-            color: #94a3b8;
-        }
-
-        /* User List Table */
-        .user-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .user-table th {
-            background: #334155;
-            color: #e2e8f0;
-            font-weight: 600;
-            padding: 12px;
-            text-align: left;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .user-table td {
-            padding: 12px;
-            border-bottom: 1px solid #334155;
-            font-size: 14px;
-        }
-
-        .user-table tr:hover {
-            background: rgba(59, 130, 246, 0.05);
-        }
-
-        .user-name {
-            color: #e2e8f0;
-            font-weight: 500;
-        }
-
-        .user-email {
-            color: #94a3b8;
-            font-size: 12px;
-        }
-
-        .user-role-badge {
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 500;
-        }
-
-        .role-admin {
-            background: rgba(239, 68, 68, 0.2);
-            color: #fca5a5;
-        }
-
-        .role-advocate {
-            background: rgba(34, 197, 94, 0.2);
-            color: #86efac;
-        }
-
-        .role-viewer {
-            background: rgba(59, 130, 246, 0.2);
-            color: #93c5fd;
-        }
-
-        .status-badge {
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 500;
-        }
-
-        .status-active {
-            background: rgba(34, 197, 94, 0.2);
-            color: #86efac;
-        }
-
-        .status-pending {
-            background: rgba(202, 138, 4, 0.2);
-            color: #fde047;
         }
 
         /* Action Buttons */
         .btn-admin {
             padding: 8px 16px;
-            border: 1px solid #334155;
+            border: 1px solid #e2e8f0;
             border-radius: 6px;
-            background: transparent;
-            color: #94a3b8;
+            background: white;
+            color: #64748b;
             font-size: 12px;
             cursor: pointer;
             transition: all 0.2s;
         }
 
         .btn-admin:hover {
-            background: #334155;
-            color: #e2e8f0;
+            background: #f8fafc;
+            color: #374151;
         }
 
         .btn-primary {
-            background: #3b82f6;
-            color: white;
-            border-color: #3b82f6;
-        }
-
-        .btn-primary:hover {
             background: #2563eb;
+            color: white;
             border-color: #2563eb;
         }
 
-        .btn-danger {
-            background: #dc2626;
-            color: white;
-            border-color: #dc2626;
-        }
-
-        .btn-danger:hover {
-            background: #b91c1c;
-            border-color: #b91c1c;
+        .btn-primary:hover {
+            background: #1d4ed8;
+            border-color: #1d4ed8;
         }
 
         /* Entity Intelligence */
@@ -509,18 +387,18 @@
             justify-content: space-between;
             align-items: center;
             padding: 12px;
-            background: #334155;
+            background: #f8fafc;
             border-radius: 6px;
             margin-bottom: 8px;
         }
 
         .entity-rank-name {
-            color: #e2e8f0;
+            color: #1e293b;
             font-weight: 500;
         }
 
         .entity-rank-views {
-            color: #3b82f6;
+            color: #2563eb;
             font-size: 12px;
             font-weight: 600;
         }
@@ -531,59 +409,113 @@
             align-items: center;
             gap: 12px;
             padding: 12px;
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.2);
+            background: #fef2f2;
+            border: 1px solid #fecaca;
             border-radius: 8px;
             margin-bottom: 12px;
         }
 
         .alert-icon {
-            color: #ef4444;
+            color: #dc2626;
             flex-shrink: 0;
         }
 
         .alert-text {
-            color: #e2e8f0;
+            color: #1e293b;
             font-size: 14px;
         }
 
         .alert-time {
-            color: #94a3b8;
+            color: #64748b;
             font-size: 12px;
             margin-left: auto;
         }
 
-        /* Tabs */
-        .tab-nav {
-            display: flex;
-            border-bottom: 1px solid #334155;
-            margin-bottom: 24px;
+        /* User Management Table */
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
         }
 
-        .tab-item {
-            padding: 12px 20px;
-            color: #94a3b8;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            transition: all 0.2s;
+        .user-table th {
+            background: #f8fafc;
+            color: #374151;
+            font-weight: 600;
+            padding: 12px;
+            text-align: left;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e2e8f0;
         }
 
-        .tab-item:hover {
-            color: #e2e8f0;
+        .user-table td {
+            padding: 12px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
         }
 
-        .tab-item.active {
-            color: #3b82f6;
-            border-bottom-color: #3b82f6;
+        .user-table tr:hover {
+            background: #f8fafc;
         }
 
+        .user-name {
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        .user-email {
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .user-role-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .role-admin {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .role-advocate {
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+
+        .role-viewer {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+
+        .status-pending {
+            background: #fefce8;
+            color: #ca8a04;
+        }
+
+        /* Modal */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.5);
             display: none;
             align-items: center;
             justify-content: center;
@@ -595,8 +527,8 @@
         }
 
         .modal {
-            background: #1e293b;
-            border: 1px solid #334155;
+            background: white;
+            border: 1px solid #e2e8f0;
             border-radius: 12px;
             padding: 32px;
             width: 90%;
@@ -608,12 +540,12 @@
         .modal-title {
             font-size: 24px;
             font-weight: 600;
-            color: #e2e8f0;
+            color: #1e293b;
             margin-bottom: 8px;
         }
 
         .modal-subtitle {
-            color: #94a3b8;
+            color: #64748b;
             margin-bottom: 24px;
         }
 
@@ -625,24 +557,24 @@
             display: block;
             font-size: 14px;
             font-weight: 500;
-            color: #e2e8f0;
+            color: #374151;
             margin-bottom: 6px;
         }
 
         .form-input {
             width: 100%;
             padding: 12px;
-            border: 1px solid #334155;
+            border: 1px solid #d1d5db;
             border-radius: 6px;
-            background: #0f172a;
-            color: #e2e8f0;
+            background: white;
+            color: #1e293b;
             font-size: 14px;
         }
 
         .form-input:focus {
             outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
         .form-textarea {
@@ -656,6 +588,55 @@
             justify-content: flex-end;
             margin-top: 24px;
         }
+
+        .tab-nav {
+            display: flex;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 24px;
+        }
+
+        .tab-item {
+            padding: 12px 20px;
+            color: #64748b;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab-item:hover {
+            color: #374151;
+        }
+
+        .tab-item.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
+        }
+
+        .invite-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .invite-stat {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .invite-stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .invite-stat-label {
+            font-size: 12px;
+            color: #64748b;
+        }
     </style>
 </head>
 <body>
@@ -664,76 +645,68 @@
         <div class="admin-sidebar">
             <div class="admin-logo">
                 <div class="logo-text">GovScope Admin</div>
-                <div class="logo-subtitle">Civic Intelligence Command</div>
+                <div class="logo-subtitle">Demo Management</div>
             </div>
             
             <nav class="admin-nav">
                 <div class="nav-section">
-                    <div class="nav-section-title">Operations</div>
-                    <a href="#" class="nav-item active">
+                    <div class="nav-section-title">Core Operations</div>
+                    <div class="nav-item active" data-view="dashboard">
                         <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
                         </svg>
                         Dashboard
-                    </a>
+                    </div>
                     
-                    <a href="#" class="nav-item" onclick="showUserManagement()">
+                    <div class="nav-item" data-view="users">
                         <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
                         </svg>
                         User Management
                         <span class="nav-badge">23</span>
-                    </a>
+                    </div>
                     
-                    <a href="#" class="nav-item">
+                    <div class="nav-item">
                         <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z"/>
                         </svg>
                         Invitations
                         <span class="nav-badge warning">5</span>
-                    </a>
+                    </div>
                 </div>
 
                 <div class="nav-section">
-                    <div class="nav-section-title">Intelligence</div>
-                    <a href="#" class="nav-item">
+                    <div class="nav-section-title">Analytics</div>
+                    <div class="nav-item">
                         <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                         </svg>
-                        Feature Analytics
-                        <span class="nav-badge success">↑</span>
-                    </a>
+                        Usage Analytics
+                    </div>
                     
-                    <a href="#" class="nav-item">
+                    <div class="nav-item">
                         <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
                         </svg>
-                        Entity Intelligence
-                    </a>
-                    
-                    <a href="#" class="nav-item">
-                        <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
-                        </svg>
-                        Market Intelligence
-                    </a>
+                        Entity Insights
+                    </div>
                 </div>
 
                 <div class="nav-section">
                     <div class="nav-section-title">System</div>
-                    <a href="#" class="nav-item">
+                    <div class="nav-item">
                         <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
                         </svg>
-                        Audit Logs
-                    </a>
+                        System Logs
+                    </div>
                     
-                    <a href="#" class="nav-item">
+                    <div class="nav-item">
                         <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>
                         </svg>
                         Settings
-                    </a>
+                    </div>
                 </div>
             </nav>
         </div>
@@ -741,7 +714,7 @@
         <!-- Main Admin Content -->
         <div class="admin-main">
             <div class="admin-header">
-                <h1 class="header-title">Civic Intelligence Command Center</h1>
+                <h1 class="header-title">Demo Management Dashboard</h1>
                 <div class="header-actions">
                     <div class="status-indicator">
                         <div class="status-dot"></div>
@@ -751,13 +724,14 @@
                         <div class="admin-avatar">SA</div>
                         <div>
                             <div style="font-size: 14px; font-weight: 500;">System Admin</div>
-                            <div style="font-size: 12px; color: #64748b;">Super User</div>
+                            <div style="font-size: 12px; color: #64748b;">Administrator</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="dashboard-content" id="dashboardContent">
+            <!-- Dashboard View -->
+            <div class="dashboard-content" id="dashboardView">
                 <!-- Overview Metrics -->
                 <div class="dashboard-overview">
                     <div class="metric-card">
@@ -798,26 +772,25 @@
 
                     <div class="metric-card">
                         <div class="metric-header">
-                            <div class="metric-title">Market Value Analyzed</div>
+                            <div class="metric-title">Sessions This Week</div>
                             <div class="metric-icon">
                                 <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"/>
+                                    <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                                 </svg>
                             </div>
                         </div>
-                        <div class="metric-value">$8.7B</div>
+                        <div class="metric-value">147</div>
                         <div class="metric-change positive">
                             <svg width="12" height="12" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
                             </svg>
-                            Available vendor budget
+                            +23% vs last week
                         </div>
                     </div>
 
                     <div class="metric-card">
                         <div class="metric-header">
-                            <div class="metric-title">Advocate Conversions</div>
+                            <div class="metric-title">Invite Advocates</div>
                             <div class="metric-icon">
                                 <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z"/>
@@ -829,7 +802,7 @@
                             <svg width="12" height="12" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
                             </svg>
-                            30% invite→advocate rate
+                            30% conversion rate
                         </div>
                     </div>
                 </div>
@@ -839,8 +812,8 @@
                     <!-- Real-time Activity Feed -->
                     <div class="section-card">
                         <div class="section-header">
-                            <h2 class="section-title">Live User Intelligence</h2>
-                            <button class="btn-admin">Export Data</button>
+                            <h2 class="section-title">Recent User Activity</h2>
+                            <button class="btn-admin">View All</button>
                         </div>
                         <div class="section-content">
                             <div class="activity-item">
@@ -854,7 +827,7 @@
                             <div class="activity-item">
                                 <div class="activity-avatar">MJ</div>
                                 <div class="activity-content">
-                                    <div class="activity-text">Maya Johnson invited colleague to <span class="activity-entity">GovScope Demo</span></div>
+                                    <div class="activity-text">Maya Johnson invited colleague <span class="activity-entity">sarah@edutech.com</span></div>
                                     <div class="activity-meta">EduTech Partners • Advocate • 8 min ago</div>
                                 </div>
                             </div>
@@ -878,17 +851,17 @@
                             <div class="activity-item">
                                 <div class="activity-avatar">AH</div>
                                 <div class="activity-content">
-                                    <div class="activity-text">Alex Harper sent feedback: <span class="activity-entity">"Workforce analysis is game-changing"</span></div>
+                                    <div class="activity-text">Alex Harper sent feedback: <span class="activity-entity">"Workforce analysis feature request"</span></div>
                                     <div class="activity-meta">GovTech Consulting • Advocate • 31 min ago</div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Quick Actions & Alerts -->
+                    <!-- Quick Actions & System Status -->
                     <div class="section-card">
                         <div class="section-header">
-                            <h2 class="section-title">System Alerts</h2>
+                            <h2 class="section-title">System Status</h2>
                         </div>
                         <div class="section-content">
                             <div class="alert-item">
@@ -908,7 +881,7 @@
                             </div>
 
                             <div style="margin-top: 24px;">
-                                <h3 style="color: #e2e8f0; font-size: 16px; margin-bottom: 16px;">Top Explored Entities</h3>
+                                <h3 style="color: #1e293b; font-size: 16px; margin-bottom: 16px;">Most Explored Entities</h3>
                                 <div class="entity-ranking">
                                     <div class="entity-rank-item">
                                         <div class="entity-rank-name">Clackamas County, OR</div>
@@ -931,43 +904,43 @@
 
                             <div style="margin-top: 24px;">
                                 <button class="btn-admin btn-primary" onclick="openBatchInvite()">Send Batch Invitations</button>
-                                <button class="btn-admin" style="margin-top: 8px;">Generate Demo Report</button>
+                                <button class="btn-admin" style="margin-top: 8px;">Export Usage Report</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Feature Analytics -->
+                <!-- Feature Usage Overview -->
                 <div class="section-card">
                     <div class="section-header">
-                        <h2 class="section-title">Democratic Impact Intelligence</h2>
+                        <h2 class="section-title">Feature Usage Overview</h2>
                     </div>
                     <div class="section-content">
                         <div class="dashboard-overview" style="margin-bottom: 0;">
-                            <div class="metric-card" style="background: #334155;">
-                                <div class="metric-title" style="color: #94a3b8;">Relationship→Data Transformation</div>
-                                <div class="metric-value" style="font-size: 24px;">78%</div>
-                                <div class="metric-change positive" style="font-size: 11px;">Users replacing demographic targeting</div>
+                            <div class="metric-card" style="background: #f8fafc;">
+                                <div class="metric-title" style="color: #64748b;">Map Explorer Usage</div>
+                                <div class="metric-value" style="font-size: 24px;">89%</div>
+                                <div class="metric-change positive" style="font-size: 11px;">Primary feature engagement</div>
                             </div>
                             
-                            <div class="metric-card" style="background: #334155;">
-                                <div class="metric-title" style="color: #94a3b8;">Market Transparency Index</div>
-                                <div class="metric-value" style="font-size: 24px;">6.2x</div>
-                                <div class="metric-change positive" style="font-size: 11px;">More entities explored vs. traditional methods</div>
+                            <div class="metric-card" style="background: #f8fafc;">
+                                <div class="metric-title" style="color: #64748b;">Budget Analysis Usage</div>
+                                <div class="metric-value" style="font-size: 24px;">67%</div>
+                                <div class="metric-change positive" style="font-size: 11px;">Deep dive analytics</div>
                             </div>
                             
-                            <div class="metric-card" style="background: #334155;">
-                                <div class="metric-title" style="color: #94a3b8;">Government Entity Coverage</div>
-                                <div class="metric-value" style="font-size: 24px;">1,247</div>
-                                <div class="metric-change neutral" style="font-size: 11px;">Of 35,000+ available entities explored</div>
+                            <div class="metric-card" style="background: #f8fafc;">
+                                <div class="metric-title" style="color: #64748b;">Workforce Analysis Usage</div>
+                                <div class="metric-value" style="font-size: 24px;">52%</div>
+                                <div class="metric-change neutral" style="font-size: 11px;">Implementation insights</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- User Management View (Hidden by default) -->
-            <div class="dashboard-content" id="userManagementContent" style="display: none;">
+            <!-- User Management View -->
+            <div class="dashboard-content" id="userManagementView" style="display: none;">
                 <div class="section-card">
                     <div class="section-header">
                         <h2 class="section-title">User Management</h2>
@@ -1109,7 +1082,7 @@
                                     <td>0 of 3</td>
                                     <td>
                                         <button class="btn-admin">Resend</button>
-                                        <button class="btn-admin btn-danger">Remove</button>
+                                        <button class="btn-admin">Remove</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -1124,7 +1097,7 @@
     <div class="modal-overlay" id="batchInviteModal">
         <div class="modal">
             <h2 class="modal-title">Batch Invitation Management</h2>
-            <p class="modal-subtitle">Invite multiple users and assign role permissions for strategic demo expansion</p>
+            <p class="modal-subtitle">Invite multiple users and assign role permissions for demo expansion</p>
             
             <form id="batchInviteForm">
                 <div class="form-group">
@@ -1155,19 +1128,38 @@
     </div>
 
     <script>
-        function showUserManagement() {
-            // Hide dashboard, show user management
-            document.getElementById('dashboardContent').style.display = 'none';
-            document.getElementById('userManagementContent').style.display = 'block';
-            
-            // Update navigation
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            document.querySelectorAll('.nav-item')[1].classList.add('active');
-            
-            // Update header
-            document.querySelector('.header-title').textContent = 'User Management System';
-        }
+        // Navigation handling
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // Remove active from all nav items
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                
+                // Add active to clicked item
+                this.classList.add('active');
+                
+                // Get the view type
+                const viewType = this.getAttribute('data-view');
+                
+                // Hide all views
+                document.getElementById('dashboardView').style.display = 'none';
+                document.getElementById('userManagementView').style.display = 'none';
+                
+                // Show the appropriate view
+                if (viewType === 'users') {
+                    document.getElementById('userManagementView').style.display = 'block';
+                    document.querySelector('.header-title').textContent = 'User Management';
+                } else if (viewType === 'dashboard') {
+                    document.getElementById('dashboardView').style.display = 'block';
+                    document.querySelector('.header-title').textContent = 'Demo Management Dashboard';
+                } else {
+                    // For other nav items, just show dashboard for now
+                    document.getElementById('dashboardView').style.display = 'block';
+                    alert(`Navigate to: ${this.textContent.trim()}\n\nThis would show the respective admin interface section.`);
+                }
+            });
+        });
 
+        // Modal functions
         function openBatchInvite() {
             document.getElementById('batchInviteModal').classList.add('active');
         }
@@ -1179,45 +1171,8 @@
         // Handle batch invite form
         document.getElementById('batchInviteForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('Batch invitations sent successfully!\n\n• 3 invitations queued for delivery\n• Role permissions assigned\n• Tracking enabled for conversion monitoring\n• Follow-up sequences activated\n\nYou can monitor invitation status in the User Management dashboard.');
+            alert('Batch invitations sent successfully!\n\n• Invitations queued for delivery\n• Role permissions assigned\n• Tracking enabled for conversion monitoring\n\nYou can monitor invitation status in the User Management dashboard.');
             closeBatchInvite();
-        });
-
-        // Simulate real-time updates
-        setInterval(function() {
-            const activities = [
-                "New user completed onboarding tour",
-                "High-value entity explored (Premium Market)",
-                "User saved custom filter view",
-                "Advocate user sent invitation",
-                "Feedback submitted: Feature request"
-            ];
-            
-            // Would update activity feed in real implementation
-        }, 30000);
-
-        // Handle navigation clicks
-        document.querySelectorAll('.nav-item').forEach((item, index) => {
-            item.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                // Remove active from all
-                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-                
-                // Add active to clicked
-                this.classList.add('active');
-                
-                // Handle different views
-                if (index === 0) { // Dashboard
-                    document.getElementById('dashboardContent').style.display = 'block';
-                    document.getElementById('userManagementContent').style.display = 'none';
-                    document.querySelector('.header-title').textContent = 'Civic Intelligence Command Center';
-                } else if (index === 1) { // User Management
-                    showUserManagement();
-                } else {
-                    alert(`Navigate to: ${this.textContent.trim()}\n\nThis would show the respective admin interface section.`);
-                }
-            });
         });
 
         // Close modal when clicking outside
@@ -1227,19 +1182,24 @@
             }
         });
 
-        // Simulate metric updates
+        // User menu functionality
+        document.querySelector('.admin-user-menu').addEventListener('click', function() {
+            alert('Admin menu: Profile, Account Settings, Sign Out');
+        });
+
+        // Simulate real-time updates
         let userCount = 23;
         let entityCount = 1247;
         
         setInterval(function() {
-            if (Math.random() > 0.7) {
+            if (Math.random() > 0.8) {
                 userCount += Math.floor(Math.random() * 2);
                 entityCount += Math.floor(Math.random() * 15);
                 
                 document.querySelector('.metric-value').textContent = userCount;
                 document.querySelectorAll('.metric-value')[1].textContent = entityCount.toLocaleString();
             }
-        }, 15000);
+        }, 30000);
     </script>
 </body>
 </html>
