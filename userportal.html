@@ -708,4 +708,153 @@
         <div class="modal">
             <div class="modal-header">
                 <h2 class="modal-title">Invite Colleagues to GovScope Demo</h2>
-                <p class="modal-
+                <p class="modal-subtitle">Share access to government market intelligence with your team. You have 3 invitations remaining.</p>
+            </div>
+
+            <div class="invite-status">
+                <div class="invite-status-title">Demo Access Privileges</div>
+                <div class="invite-status-text">As a trusted demo user, you can invite colleagues to explore GovScope's government vendor intelligence platform.</div>
+            </div>
+
+            <form id="inviteForm">
+                <div class="form-group">
+                    <label class="form-label" for="inviteeEmail">Email Address</label>
+                    <input type="email" id="inviteeEmail" class="form-input" placeholder="colleague@company.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="inviteeName">Full Name</label>
+                    <input type="text" id="inviteeName" class="form-input" placeholder="Sarah Johnson" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="inviteeRole">Role/Title</label>
+                    <input type="text" id="inviteeRole" class="form-input" placeholder="Director of Business Development">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="inviteMessage">Personal Message (Optional)</label>
+                    <textarea id="inviteMessage" class="form-input form-textarea" placeholder="Hi Sarah, I've been exploring this government market intelligence platform and think it would be valuable for our upcoming RFP strategy. The budget analysis features are particularly impressive for identifying qualified prospects."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeInviteModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">Send Invitation</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openInviteModal() {
+            document.getElementById('inviteModal').classList.add('active');
+        }
+
+        function closeInviteModal() {
+            document.getElementById('inviteModal').classList.remove('active');
+            document.getElementById('inviteForm').reset();
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('inviteModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeInviteModal();
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('inviteForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('inviteeEmail').value;
+            const name = document.getElementById('inviteeName').value;
+            const role = document.getElementById('inviteeRole').value;
+            const message = document.getElementById('inviteMessage').value;
+
+            // Simulate sending invitation
+            alert(`Invitation sent to ${name} (${email})\n\nThey will receive access to the GovScope demo with a personalized onboarding experience.`);
+            
+            closeInviteModal();
+            
+            // Update invite count (simulate)
+            const inviteLimit = document.querySelector('.invite-limit');
+            const currentText = inviteLimit.textContent;
+            const remaining = parseInt(currentText.match(/(\d+) of/)[1]) - 1;
+            inviteLimit.textContent = `${remaining} of 5 invites remaining`;
+            
+            if (remaining === 0) {
+                const inviteButton = document.querySelector('.invite-button');
+                inviteButton.disabled = true;
+                inviteButton.textContent = 'Invite Limit Reached';
+            }
+        });
+
+        // Simulate user menu functionality
+        document.querySelector('.user-menu').addEventListener('click', function() {
+            alert('User menu: Profile, Account Settings, Sign Out');
+        });
+
+        // Simulate navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all items
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                
+                // Add active class to clicked item
+                this.classList.add('active');
+                
+                // Update header title based on navigation
+                const headerTitle = document.querySelector('.header-title');
+                const itemText = this.textContent.trim();
+                
+                switch(itemText) {
+                    case 'Usage Dashboard':
+                        headerTitle.textContent = 'Welcome, Taylor Richards';
+                        break;
+                    case 'Saved Views':
+                        headerTitle.textContent = 'Your Saved Views';
+                        break;
+                    case 'Take a Tour':
+                        headerTitle.textContent = 'Product Tour';
+                        break;
+                    case 'Profile':
+                        headerTitle.textContent = 'Account Profile';
+                        break;
+                    case 'Settings':
+                        headerTitle.textContent = 'Account Settings';
+                        break;
+                    case 'Help':
+                        headerTitle.textContent = 'Help & Documentation';
+                        break;
+                }
+            });
+        });
+
+        // Simulate action card clicks
+        document.querySelectorAll('.action-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const title = this.querySelector('.action-title').textContent;
+                alert(`Navigating to: ${title}\n\nThis would open the respective GovScope module with your personalized data and saved filters.`);
+            });
+        });
+
+        // Simulate saved view clicks
+        document.querySelectorAll('.view-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const title = this.querySelector('h4').textContent;
+                const description = this.querySelector('p').textContent;
+                alert(`Loading saved view: ${title}\n\n${description}\n\nThis would restore your exact filter settings and display the qualifying government entities.`);
+            });
+        });
+
+        // Simulate feedback button
+        document.querySelectorAll('.feedback-button').forEach(button => {
+            button.addEventListener('click', function() {
+                alert('Feedback Form:\n\n• Feature requests\n• Bug reports\n• User experience feedback\n• Market intelligence accuracy\n\nDirect line to The Public Foundry product team for rapid iteration during demo phase.');
+            });
+        });
+    </script>
+</body>
+</html>
